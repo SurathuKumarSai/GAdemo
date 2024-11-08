@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    container_name: backend
+    ports:
+      - "8000:8000"  # Expose backend FastAPI on port 8000
+    networks:
+      - app_network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    container_name: frontend
+    ports:
+      - "5000:5000"  # Expose Flask frontend on port 5000
+    depends_on:
+      - backend  # Ensure frontend starts after backend (optional)
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
