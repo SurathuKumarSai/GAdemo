@@ -1,0 +1,28 @@
+name: Notify on Changes
+
+on:
+  push:
+    paths:
+      - '**'  # Watches all files in the repository
+
+jobs:
+  check-for-changes:
+    runs-on: self-hosted  # Ensure the workflow runs on your self-hosted runner
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check for file changes
+        id: check_changes
+        run: |
+          git diff --name-only HEAD^ HEAD > changed_files.txt
+          if [ -s changed_files.txt ]; then
+            echo "changes_detected=true" >> $GITHUB_ENV
+          else
+            echo "changes_detected=false" >> $GITHUB_ENV
+          fi
+
+      - name: Send message
+        if: env.changes_detected == 'true'
+        run: echo "wow"
