@@ -1,4 +1,4 @@
-name: Notify on Changes
+name: Notify on Push
 
 on:
   push:
@@ -6,29 +6,12 @@ on:
       - '**'  # Watches all files in the repository
 
 jobs:
-  check-for-changes:
-    runs-on: self-hosted  # Ensure the workflow runs on your self-hosted runner
+  send-message:
+    runs-on: self-hosted  # Ensure it runs on your self-hosted runner
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Check for file changes
-        id: check_changes
-        run: |
-          # Check if this is the first commit, where there's no previous commit to compare against
-          if [[ $(git rev-list --count HEAD) -eq 1 ]]; then
-            echo "changes_detected=true" >> $GITHUB_ENV
-          else
-            # If there are more commits, compare the last commit to the previous one
-            git diff --name-only HEAD^ HEAD > changed_files.txt
-            if [ -s changed_files.txt ]; then
-              echo "changes_detected=true" >> $GITHUB_ENV
-            else
-              echo "changes_detected=false" >> $GITHUB_ENV
-            fi
-          fi
-
       - name: Send message
-        if: env.changes_detected == 'true'
         run: echo "wow"
