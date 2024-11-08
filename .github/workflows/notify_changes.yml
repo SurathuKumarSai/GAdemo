@@ -16,11 +16,17 @@ jobs:
       - name: Check for file changes
         id: check_changes
         run: |
-          git diff --name-only HEAD^ HEAD > changed_files.txt
-          if [ -s changed_files.txt ]; then
+          # Check if this is the first commit, where there's no previous commit to compare against
+          if [[ $(git rev-list --count HEAD) -eq 1 ]]; then
             echo "changes_detected=true" >> $GITHUB_ENV
           else
-            echo "changes_detected=false" >> $GITHUB_ENV
+            # If there are more commits, compare the last commit to the previous one
+            git diff --name-only HEAD^ HEAD > changed_files.txt
+            if [ -s changed_files.txt ]; then
+              echo "changes_detected=true" >> $GITHUB_ENV
+            else
+              echo "changes_detected=false" >> $GITHUB_ENV
+            fi
           fi
 
       - name: Send message
