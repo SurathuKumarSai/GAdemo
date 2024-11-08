@@ -1,4 +1,4 @@
-name: Notify on Push
+name: Build Docker Image on Push
 
 on:
   push:
@@ -6,12 +6,15 @@ on:
       - '**'  # Watches all files in the repository
 
 jobs:
-  send-message:
+  build-docker-image:
     runs-on: self-hosted  # Ensure it runs on your self-hosted runner
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Send message
-        run: echo "wow"
+      - name: Build Docker Image
+        run: |
+          # Navigate to the backend folder and build the Docker image
+          cd backend
+          docker build -t cicd_backend .
