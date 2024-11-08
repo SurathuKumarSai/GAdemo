@@ -5,7 +5,7 @@ FROM python:3.12
 WORKDIR /app
 
 # Copy backend app into the container
-COPY ./frontend/app /app/
+COPY ./app /app/
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
